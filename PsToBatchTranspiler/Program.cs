@@ -33,8 +33,12 @@ namespace Powershell2Batch {
             using (StreamWriter writer = new StreamWriter(outputFile.FullName))
             {
                 string templateLine, inputLine;
-                while ((templateLine = templateReader.ReadLine()) != "::Payload")
+                while ((templateLine = templateReader.ReadLine()) != "::Payload") {
+                    if (templateLine.EndsWith("::ScriptName"))
+                        templateLine = templateLine.Replace("::ScriptName", inputFile.Name);
                     writer.WriteLine(templateLine);
+                }
+                    
 
                 while ((inputLine = inputReader.ReadLine()) != null) {
                     foreach (string c in BatchSpecialChars)

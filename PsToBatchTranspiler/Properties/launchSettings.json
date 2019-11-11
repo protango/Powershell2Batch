@@ -2,7 +2,7 @@
   "profiles": {
     "Powershell2Batch": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\Zac\\Desktop\\New folder\\rename.ps1\" \"C:\\Users\\Zac\\Desktop\\New folder\\rename.bat\""
+      "commandLineArgs": "\"C:\\Users\\Zac\\Desktop\\New folder\\rename.ps1\""
     }
   }
 }
