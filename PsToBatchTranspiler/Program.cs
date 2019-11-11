@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace PsToBatchTranspiler {
+namespace Powershell2Batch {
     class Program {
         private static readonly IReadOnlyList<string> BatchSpecialChars = new string[] {
             "%", "^", "&", "<", ">", "|"
@@ -27,7 +27,7 @@ namespace PsToBatchTranspiler {
             }
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            using (Stream templateStream = assembly.GetManifestResourceStream("PsToBatchTranspiler.Template.bat"))
+            using (Stream templateStream = assembly.GetManifestResourceStream("Powershell2Batch.Template.bat"))
             using (StreamReader templateReader = new StreamReader(templateStream))
             using (StreamReader inputReader = new StreamReader(inputFile.FullName))
             using (StreamWriter writer = new StreamWriter(outputFile.FullName))

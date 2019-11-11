@@ -1,5 +1,5 @@
 ﻿@echo off
-set scriptName=%~n0.ps1
+set scriptName=::ScriptName
 :setScriptName
 	if exist .\%scriptName% (
 		set scriptName=%~n0%RANDOM%.ps1
