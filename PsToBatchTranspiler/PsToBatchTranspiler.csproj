@@ -5,4 +5,12 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Template.bat" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Template.bat" />
+  </ItemGroup>
+
 </Project>

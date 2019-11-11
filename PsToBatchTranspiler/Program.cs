@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace PsToBatchTranspiler {
-    class Program { 
+    class Program {
+        private static readonly IReadOnlyList<string> BatchSpecialChars = new string[] {
+            "%", "^", "&", "<", ">", "|"
+        };
+
         static void Main(string[] args) {
             try {
                 ValidateArgs(args);
@@ -13,7 +19,34 @@ namespace PsToBatchTranspiler {
                 return;
             }
 
+            FileInfo inputFile = new FileInfo(args[0]), outputFile;
+            if (args.Length < 2) {
+                outputFile = new FileInfo(Path.ChangeExtension(inputFile.FullName, ".bat"));
+            } else {
+                outputFile = new FileInfo(args[1]);
+            }
 
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using (Stream templateStream = assembly.GetManifestResourceStream("PsToBatchTranspiler.Template.bat"))
+            using (StreamReader templateReader = new StreamReader(templateStream))
+            using (StreamReader inputReader = new StreamReader(inputFile.FullName))
+            using (StreamWriter writer = new StreamWriter(outputFile.FullName))
+            {
+                string templateLine, inputLine;
+                while ((templateLine = templateReader.ReadLine()) != "::Payload")
+                    writer.WriteLine(templateLine);
+
+                while ((inputLine = inputReader.ReadLine()) != null) {
+                    foreach (string c in BatchSpecialChars)
+                        inputLine = inputLine.Replace(c, "^" + c);
+                    writer.WriteLine($"echo.{inputLine}>%scriptName%");
+                }
+
+                while ((templateLine = templateReader.ReadLine()) != null)
+                    writer.WriteLine(templateLine);
+            }
+
+            Console.WriteLine("Done :)");
         }
 
         static void ValidateArgs(string[] args) {
@@ -36,11 +69,12 @@ namespace PsToBatchTranspiler {
 
         static void ShowHelp() {
             Console.WriteLine(
-                "USAGE: " +
+                "USAGE:\n" +
                 "    ps2cmd <file path> [output path]\n" +
                 "PARAMS:\n" +
-                "    <file path>   specifies the input powershell file that will be transpiled\n" +
-                "    [output path] specifies the output batch file path. If omitted, the batch file will be placed in the same directory as the input file"
+                "    <file path>   The input powershell file that will be transpiled\n" +
+                "    [output path] The output batch file path. \n" +
+                "                  If omitted, the output file will be placed alongside the input file"
             );
 
         }
